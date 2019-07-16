@@ -1,5 +1,4 @@
 using LinearAlgebra
-using Flux
 
 a = [1, 2, 3, 5, 5, 5, 6]
 b = [1, 1, 2, 2, 3, 5]
@@ -13,10 +12,9 @@ function DTW(a, b)
             table[i, j] += min(Inf, table[i-1, j], table[i-1, j-1], table[i, j-1])
         end
     end
-    return table
+    return table[end, end], minimum_warp_path(table)
 end
 
-t = DTW(a, b)
 
 function minimum_warp_path(table)
     current_pos = size(table) |> collect
@@ -54,6 +52,3 @@ function minimum_warp_path(table)
     shortest_path = vcat(shortest_path'...)  # reshape
     return shortest_path
 end
-
-t = DTW(a, b)
-p = minimum_warp_path(t)
