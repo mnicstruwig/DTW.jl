@@ -6,7 +6,7 @@ implementation in Julia that was either actively maintained or functional. As
 a result, I decided to write my own.
 
 Currently this is a naive implementation of DTW --- so it has the pesky O(n^2)
-comlexity. I plan on implementating FastDTW at some point, but I'm new to
+complexity. I plan on implementating FastDTW at some point, but I'm new to
 re-implementing things from academic papers.
 
 ## Side notes
