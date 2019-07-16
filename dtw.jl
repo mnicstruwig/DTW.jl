@@ -4,44 +4,19 @@ using Flux
 a = [1, 2, 3, 5, 5, 5, 6]
 b = [1, 1, 2, 2, 3, 5]
 
-a = rand(10)
-b = rand(10)
-
-# a = param(a)
-# b = param(b)
-# Make first row and column very large numbers
-
-dist = (x,y) -> norm(x-y)
-
-
 function DTW(a, b)
-    table = zeros(Float64, size(a)[1], size(b)[1])
+    table = fill(Inf, size(a)[1]+1, size(b)[1]+1)
     table[1, 1] = 0
-    for i in 1:size(a)[1]
-        for j in 1:size(b)[1]
-            table[i, j] = abs(a[i] - b[j])  # Calculate distance of current signal indices
-
-            # Indices we can move from (DTW must be monotonically increasing)
-            indexes = [(i-1, j),   # Left --> pos
-                       (i-1, j-1), # Up Left --> pos
-                       (i, j-1)]   # Up --> pos
-
-            current_distances = []
-            for idx in indexes
-                try
-                    push!(current_distances,table[idx...])
-                catch BoundsError  # Handle out of bounds case
-                    push!(current_distances, Inf)
-                end
-            end
-            if all(isinf.(current_distances))  # Handle if everything was out of bounds
-                push!(current_distances, 0.)
-            end
-            table[i, j] += min(current_distances...)  # Add the previous minimum distance to current distance
+    for i in 2:size(table, 1)
+        for j in 2:size(table, 2)
+            table[i, j] = abs(a[i-1] - b[j-1])  # Calculate distance of current signal indices
+            table[i, j] += min(Inf, table[i-1, j], table[i-1, j-1], table[i, j-1])
         end
     end
     return table
 end
+
+t = DTW(a, b)
 
 function minimum_warp_path(table)
     current_pos = size(table) |> collect
