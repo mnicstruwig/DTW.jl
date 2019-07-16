@@ -20,28 +20,20 @@ t = DTW(a, b)
 
 function minimum_warp_path(table)
     current_pos = size(table) |> collect
-    keep_going = true
+    at_start_index = false
     shortest_path = []
     push!(shortest_path, copy(current_pos))  # We start at the end and work back
 
-    while keep_going == true
+    while at_start_index == false
         current_value = table[current_pos...]
+        println(current_pos)
         # We search the direct left, left and up, and upward directions
         # for the smallest distance.
         indexes = ((current_pos[1] - 1, current_pos[2]),      # Left
                    (current_pos[1] - 1, current_pos[2] - 1),  # Up and Left
                    (current_pos[1], current_pos[2] - 1))      # Up
 
-        # For each of our possible cells to check
-        values = []
-        for idx in indexes
-            try
-                push!(values, table[idx...])
-            catch BoundsError  # We make sure we handle if we go out of bounds
-                push!(values, Inf)
-            end
-        end
-
+        values = [table[idx...] for idx in indexes]
         min_arg = argmin(values)  # Get direction had the smallest distance
 
         if min_arg == 1         # Left
@@ -55,7 +47,7 @@ function minimum_warp_path(table)
 
         # Stop once you're at the beginning
         if current_pos == [1, 1]
-            keep_going = false
+            at_start_index = true
         end
         pushfirst!(shortest_path, copy(current_pos))
     end
@@ -63,3 +55,5 @@ function minimum_warp_path(table)
     return shortest_path
 end
 
+t = DTW(a, b)
+p = minimum_warp_path(t)
